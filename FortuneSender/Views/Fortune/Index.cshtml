@@ -1,0 +1,40 @@
+﻿@model FortuneSender.BLL.Models.FortuneMessage
+@{
+   ViewBag.Title = "Index";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Fortune board</h2>
+
+@Html.ActionLink("Send fortune message", "SendFortuneMessage", null, new {@class = "btn btn-info"})
+
+@if (Model != null)
+{
+   <div>
+      <h4>Message</h4>
+      <hr/>
+      <dl class="dl-horizontal">
+         <dt>
+            @Html.DisplayNameFor(model => model.Id)
+         </dt>
+         <dd>
+            @Html.DisplayFor(model => model.Id)
+         </dd>
+         <dt>
+            @Html.DisplayNameFor(model => model.Topic)
+         </dt>
+
+         <dd>
+            @Html.DisplayFor(model => model.Topic)
+         </dd>
+
+         <dt>
+            @Html.DisplayNameFor(model => model.Body)
+         </dt>
+
+         <dd>
+            @Html.DisplayFor(model => model.Body)
+         </dd>
+      </dl>
+   </div>
+}
