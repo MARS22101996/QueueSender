@@ -1,37 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
+using AutoMapper;
+using FortuneSender.BLL.Dto;
 using FortuneSender.BLL.Interfaces;
-using FortuneSender.BLL.Models;
-using Microsoft.ServiceBus.Messaging;
+using FortuneSender.DAL.Entities;
+using FortuneSender.DAL.Interfaces;
 
 namespace FortuneSender.BLL.Services
 {
    public class FortuneService : IFortuneService
    {
-      private const string QueueName = "queue-maria";
-      private readonly Lazy<string> _connectionServiceBus = 
-         new Lazy<string>(GetServiceBusConnection);
-      private QueueClient _client;
+      private readonly IQueueRepository _queueRepository;
+      private readonly IMapper _mapper;
       private List<FortuneMessage> _listOFortuneMessages;
 
-      public FortuneService()
+      public FortuneService(
+         IQueueRepository queueRepository,
+         IMapper mapper)
       {
+         _queueRepository = queueRepository;
+         _mapper = mapper;
          InitializeMessages();
-
-         InitializeQueueClient();
       }
 
-      public FortuneMessage ConfigureAndSendFortuneMessage()
+      public FortuneMessageDto ConfigureAndSendFortuneMessage()
       {
          var fortuneMessage = GetFortuneMessage();
 
-         var message = new BrokeredMessage(fortuneMessage);
+         _queueRepository.Send(fortuneMessage);
 
-         _client.Send(message);
+         var fortuneMessageDto = _mapper.Map<FortuneMessageDto>(fortuneMessage);
 
-         return fortuneMessage;
+         return fortuneMessageDto;
       }
 
       private FortuneMessage GetFortuneMessage()
@@ -43,26 +44,7 @@ namespace FortuneSender.BLL.Services
          return message;
       }
 
-      private static string GetServiceBusConnection()
-      {
-         try
-         {
-            var connectionString = ConfigurationManager.AppSettings["Microsoft.ServiceBus.ConnectionString"];
-            return connectionString ?? string.Empty;
-         }
-         catch (ConfigurationErrorsException ex)
-         {
-            throw new Exception("Cannot read connection string from the config file", ex);
-         }
-
-      }
-
-      private void InitializeQueueClient()
-      {
-         _client = QueueClient.CreateFromConnectionString(_connectionServiceBus.Value, QueueName);
-      }
-
-      private static int GenerateRandomNumber()
+      private int GenerateRandomNumber()
       {
          var rnd = new Random();
 
@@ -74,10 +56,10 @@ namespace FortuneSender.BLL.Services
       {
          _listOFortuneMessages = new List<FortuneMessage>
          {
-            new FortuneMessage {Id = 1, Topic = "Love", Body = "You will be happy in love"},
-            new FortuneMessage {Id = 2, Topic = "Love", Body = "You will be divorsed"},
-            new FortuneMessage {Id = 3, Topic = "Work", Body = "You will have well-paid work"},
-            new FortuneMessage {Id = 4, Topic = "Work", Body = "You will have bad-paid work"}
+            new FortuneMessage { Id = 1, Topic = "Love", Body = "You will be happy in love" },
+            new FortuneMessage { Id = 2, Topic = "Love", Body = "You will be divorsed" },
+            new FortuneMessage { Id = 3, Topic = "Work", Body = "You will have well-paid work" },
+            new FortuneMessage { Id = 4, Topic = "Work", Body = "You will have bad-paid work" }
          };
       }
    }

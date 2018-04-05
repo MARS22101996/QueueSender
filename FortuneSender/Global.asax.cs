@@ -1,7 +1,9 @@
 ﻿using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using FortuneSender.Infrastrucrure.Automapper;
 using FortuneSender.Infrastrucrure.DI;
+using DependencyResolver = FortuneSender.Infrastrucrure.DI.DependencyResolver;
 
 namespace FortuneSender
 {
@@ -9,7 +11,8 @@ namespace FortuneSender
    {
       protected void Application_Start()
       {
-         DependencyResolverModule.Setup();
+         AutoMapperConfiguration.Configure();
+         DependencyResolver.Setup();
          AreaRegistration.RegisterAllAreas();
          FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
          RouteConfig.RegisterRoutes(RouteTable.Routes);

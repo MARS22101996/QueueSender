@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace FortuneSender.BLL.Models
+namespace FortuneSender.DAL.Entities
 {
    [DataContract(Name = "FortuneMessage", Namespace = "FortuneMessage")]
    public class FortuneMessage

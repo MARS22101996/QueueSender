@@ -1,9 +1,9 @@
-﻿using FortuneSender.BLL.Models;
+﻿using FortuneSender.BLL.Dto;
 
 namespace FortuneSender.BLL.Interfaces
 {
    public interface IFortuneService
    {
-      FortuneMessage ConfigureAndSendFortuneMessage();
+      FortuneMessageDto ConfigureAndSendFortuneMessage();
    }
 }

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Autofac;
+﻿using Autofac;
 using Autofac.Integration.Mvc;
+using AutoMapper;
+using FortuneSender.BLL.Infrastructure.DI;
 using FortuneSender.BLL.Interfaces;
 using FortuneSender.BLL.Services;
+using FortuneSender.Infrastrucrure.Automapper;
 
 namespace FortuneSender.Infrastrucrure.DI
 {
-   public class DependencyResolverModule
+   public class DependencyResolver
    {
       public static void Setup()
       {
@@ -20,13 +18,17 @@ namespace FortuneSender.Infrastrucrure.DI
 
          Configure(builder);
 
+         DependencyResolverModuleBll.Configure(builder);
+
          var container = builder.Build();
 
-         DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+         System.Web.Mvc.DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
       }
 
       private static void Configure(ContainerBuilder builder)
       {
+         builder.Register(c => AutoMapperConfiguration.Configure()).As<IMapper>()
+         .InstancePerLifetimeScope().PropertiesAutowired().PreserveExistingDefaults();
          builder.RegisterType<FortuneService>().As<IFortuneService>();
       }
    }

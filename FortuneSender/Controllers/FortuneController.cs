@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using AutoMapper;
 using FortuneSender.BLL.Interfaces;
+using FortuneSender.ViewModels;
 
 namespace FortuneSender.Controllers
 {
    public class FortuneController : Controller
    {
       private readonly IFortuneService _fortuneService;
+      private readonly IMapper _mapper;
 
-      public FortuneController(IFortuneService fortuneService)
+      public FortuneController(
+         IFortuneService fortuneService,
+         IMapper mapper)
       {
          _fortuneService = fortuneService;
+         _mapper = mapper;
       }
 
       [HttpGet]
@@ -27,7 +29,9 @@ namespace FortuneSender.Controllers
       {
          var message = _fortuneService.ConfigureAndSendFortuneMessage();
 
-         return View("Index", message);
+         var messageViewModel = _mapper.Map<FortuneMessageViewModel>(message);
+
+         return View("Index", messageViewModel);
       }
    }
 }
