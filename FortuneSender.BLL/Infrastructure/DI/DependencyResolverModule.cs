@@ -8,7 +8,7 @@ namespace FortuneSender.BLL.Infrastructure.DI
    {
       public static void Configure(ContainerBuilder builder)
       {
-         builder.RegisterType<AzureServiceBusRepository>().As<IQueueRepository>();
+         builder.RegisterType<RabbitMqRepository>().As<IQueueRepository>();
       }
    }
 }
